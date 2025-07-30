@@ -54,6 +54,8 @@ def find_plate_candidates(edged, area_threshold=500, aspect_ratio_range=(2.0, 5.
     """
     contours, _ = cv2.findContours(edged, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     candidates = []
+    
+    print(f"🔍 Processing {len(contours)} total contours...")
 
     for cnt in contours:
         x, y, w, h = cv2.boundingRect(cnt)
@@ -72,6 +74,7 @@ def find_plate_candidates(edged, area_threshold=500, aspect_ratio_range=(2.0, 5.
             
         candidates.append((x, y, w, h))
 
+    print(f"✅ Found {len(candidates)} valid plate-like regions.")
     return candidates
 
 def draw_bounding_boxes(image, boxes, color=(0, 255, 0), thickness=2):
