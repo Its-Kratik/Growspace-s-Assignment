@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 from PIL import Image
 import tempfile
-from plate_detector import detect_license_plates, detect_license_plates_from_array
+from plate_detector import detect_license_plates_from_array
 from filter_boxes import filter_detections
 
 st.set_page_config(page_title="AI/ML Assignments – GrowSpace", layout="centered")
@@ -30,33 +30,24 @@ if task.startswith("License Plate"):
     if uploaded_file is not None:
         # Convert PIL image to numpy array for processing
         img = Image.open(uploaded_file).convert("RGB")
-        img_array = np.array(img)
-        # Convert RGB to BGR for OpenCV
-        img_array_bgr = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
+        image_np = np.array(img)
+        image_bgr = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
         
         temp_output = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
         
-        # Use the new array-based function
-        result_array = detect_license_plates_from_array(
-            image_array=img_array_bgr,
+        # Use the clean array-based function
+        detect_license_plates_from_array(
+            image_array=image_bgr,
             output_path=temp_output.name,
             canny_thresh=(canny1, canny2),
             area_threshold=min_area,
-            aspect_ratio_range=(aspect_low, aspect_high),
-            edge_density_threshold=edge_density
+            aspect_ratio_range=(aspect_low, aspect_high)
         )
         
-        # Get number of detected regions for debugging
-        edged = preprocess_image(img_array_bgr, (5, 5), (canny1, canny2))
-        candidates = find_plate_candidates(edged, min_area, (aspect_low, aspect_high), edge_density)
-        
         # Convert result back to RGB for display
-        result_rgb = cv2.cvtColor(result_array, cv2.COLOR_BGR2RGB)
+        result_rgb = cv2.cvtColor(cv2.imread(temp_output.name), cv2.COLOR_BGR2RGB)
         result_pil = Image.fromarray(result_rgb)
 
-        # Display debug information
-        st.info(f"🔍 Found {len(candidates)} plate-like regions with current settings.")
-        
         col1, col2 = st.columns(2)
         col1.image(img, caption="Uploaded Image", use_container_width=True)
         col2.image(result_pil, caption="Detected Plates", use_container_width=True)
