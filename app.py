@@ -49,8 +49,8 @@ if task.startswith("License Plate"):
         result_pil = Image.fromarray(result_rgb)
 
         col1, col2 = st.columns(2)
-        col1.image(img, caption="Uploaded Image", use_column_width=True)
-        col2.image(result_pil, caption="Detected Plates", use_column_width=True)
+        col1.image(img, caption="Uploaded Image", use_container_width=True)
+        col2.image(result_pil, caption="Detected Plates", use_container_width=True)
 
 # Task 2: YOLO Post-Filtering
 else:
