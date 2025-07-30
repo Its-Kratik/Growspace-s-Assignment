@@ -23,8 +23,9 @@ if task.startswith("License Plate"):
 
     canny1 = st.slider("Canny Threshold 1", 10, 200, 50)
     canny2 = st.slider("Canny Threshold 2", 50, 300, 150)
-    min_area = st.slider("Minimum Area (px²)", 100, 2000, 500)
-    aspect_low, aspect_high = st.slider("Aspect Ratio Range", 1.0, 6.0, (2.0, 5.0))
+    min_area = st.slider("Minimum Area (px²)", 100, 2000, 800)  # Increased from 500 to 800
+    aspect_low, aspect_high = st.slider("Aspect Ratio Range", 1.0, 6.0, (2.5, 4.0))  # Narrowed from (2.0, 5.0)
+    edge_density = st.slider("Edge Density Threshold", 0.05, 0.3, 0.1, help="Minimum edge density for text-like regions")
 
     if uploaded_file is not None:
         # Convert PIL image to numpy array for processing
@@ -41,7 +42,8 @@ if task.startswith("License Plate"):
             output_path=temp_output.name,
             canny_thresh=(canny1, canny2),
             area_threshold=min_area,
-            aspect_ratio_range=(aspect_low, aspect_high)
+            aspect_ratio_range=(aspect_low, aspect_high),
+            edge_density_threshold=edge_density
         )
         
         # Convert result back to RGB for display
