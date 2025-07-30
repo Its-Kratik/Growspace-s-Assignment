@@ -56,3 +56,16 @@ def detect_license_plates(input_path, output_path="output.jpg",
     candidates = find_plate_candidates(edged, area_threshold, aspect_ratio_range)
     result = draw_bounding_boxes(image, candidates)
     cv2.imwrite(output_path, result)
+
+def detect_license_plates_from_array(image_array, output_path="output.jpg",
+                          blur_kernel=(5, 5), canny_thresh=(50, 150),
+                          area_threshold=500, aspect_ratio_range=(2.0, 5.0)):
+    """
+    Directly detect from an image array (used in Streamlit)
+    """
+    image = image_array.copy()
+    edged = preprocess_image(image, blur_kernel, canny_thresh)
+    candidates = find_plate_candidates(edged, area_threshold, aspect_ratio_range)
+    result = draw_bounding_boxes(image, candidates)
+    cv2.imwrite(output_path, result)
+    return result
