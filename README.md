@@ -30,6 +30,7 @@ This project demonstrates two key AI/ML concepts:
 - **Edge Detection**: Canny edge detection for contour identification
 - **Shape Analysis**: Filters candidates based on aspect ratio and area
 - **Real-time Processing**: Interactive parameter tuning via Streamlit
+- **Dataset**: Tested on [Car Plate Detection Dataset](https://www.kaggle.com/datasets/andrewmvd/car-plate-detection) from Kaggle
 
 ### 2. YOLO Bounding Box Post-Filtering
 - **Non-Maximum Suppression**: Implements IoU-based filtering
