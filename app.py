@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 from PIL import Image
 import tempfile
-from plate_detector import detect_license_plates
+from plate_detector import detect_license_plates, detect_license_plates_from_array
 from filter_boxes import filter_detections
 
 st.set_page_config(page_title="AI/ML Assignments – GrowSpace", layout="centered")
@@ -27,23 +27,30 @@ if task.startswith("License Plate"):
     aspect_low, aspect_high = st.slider("Aspect Ratio Range", 1.0, 6.0, (2.0, 5.0))
 
     if uploaded_file is not None:
+        # Convert PIL image to numpy array for processing
         img = Image.open(uploaded_file).convert("RGB")
-        temp_input = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
-        temp_input.write(uploaded_file.read())
-        temp_input.flush()
-
+        img_array = np.array(img)
+        # Convert RGB to BGR for OpenCV
+        img_array_bgr = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
+        
         temp_output = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
-        detect_license_plates(
-            input_path=temp_input.name,
+        
+        # Use the new array-based function
+        result_array = detect_license_plates_from_array(
+            image_array=img_array_bgr,
             output_path=temp_output.name,
             canny_thresh=(canny1, canny2),
             area_threshold=min_area,
             aspect_ratio_range=(aspect_low, aspect_high)
         )
+        
+        # Convert result back to RGB for display
+        result_rgb = cv2.cvtColor(result_array, cv2.COLOR_BGR2RGB)
+        result_pil = Image.fromarray(result_rgb)
 
         col1, col2 = st.columns(2)
         col1.image(img, caption="Uploaded Image", use_column_width=True)
-        col2.image(temp_output.name, caption="Detected Plates", use_column_width=True)
+        col2.image(result_pil, caption="Detected Plates", use_column_width=True)
 
 # Task 2: YOLO Post-Filtering
 else:
