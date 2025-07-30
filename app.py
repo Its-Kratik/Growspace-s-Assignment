@@ -23,8 +23,8 @@ if task.startswith("License Plate"):
 
     canny1 = st.slider("Canny Threshold 1", 10, 200, 50)
     canny2 = st.slider("Canny Threshold 2", 50, 300, 150)
-    min_area = st.slider("Minimum Area (px²)", 100, 2000, 800)  # Increased from 500 to 800
-    aspect_low, aspect_high = st.slider("Aspect Ratio Range", 1.0, 6.0, (2.5, 4.0))  # Narrowed from (2.0, 5.0)
+    min_area = st.slider("Minimum Area (px²)", 100, 2000, 500)  # Back to 500 for better detection
+    aspect_low, aspect_high = st.slider("Aspect Ratio Range", 1.0, 6.0, (2.0, 5.0))  # Back to wider range
     edge_density = st.slider("Edge Density Threshold", 0.05, 0.3, 0.1, help="Minimum edge density for text-like regions")
 
     if uploaded_file is not None:
@@ -46,10 +46,17 @@ if task.startswith("License Plate"):
             edge_density_threshold=edge_density
         )
         
+        # Get number of detected regions for debugging
+        edged = preprocess_image(img_array_bgr, (5, 5), (canny1, canny2))
+        candidates = find_plate_candidates(edged, min_area, (aspect_low, aspect_high), edge_density)
+        
         # Convert result back to RGB for display
         result_rgb = cv2.cvtColor(result_array, cv2.COLOR_BGR2RGB)
         result_pil = Image.fromarray(result_rgb)
 
+        # Display debug information
+        st.info(f"🔍 Found {len(candidates)} plate-like regions with current settings.")
+        
         col1, col2 = st.columns(2)
         col1.image(img, caption="Uploaded Image", use_container_width=True)
         col2.image(result_pil, caption="Detected Plates", use_container_width=True)
