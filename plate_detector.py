@@ -20,17 +20,57 @@ def is_valid_plate(w, h, area_threshold=500, aspect_ratio_range=(2.0, 5.0)):
     aspect_ratio = w / float(h)
     return aspect_ratio_range[0] <= aspect_ratio <= aspect_ratio_range[1]
 
-def find_plate_candidates(edged, area_threshold=500, aspect_ratio_range=(2.0, 5.0)):
+def check_plate_like_shape(contour, tolerance=0.1):
     """
-    Find contours and filter based on shape and aspect ratio.
+    Check if contour has a rectangular shape similar to license plates.
+    """
+    # Approximate the contour to a polygon
+    epsilon = tolerance * cv2.arcLength(contour, True)
+    approx = cv2.approxPolyDP(contour, epsilon, True)
+    
+    # Check if it's approximately a rectangle (4 sides)
+    if len(approx) == 4:
+        return True
+    return False
+
+def check_edge_density(edged, x, y, w, h, min_density=0.1):
+    """
+    Check if the region has sufficient edge density (characteristic of text).
+    """
+    roi = edged[y:y+h, x:x+w]
+    if roi.size == 0:
+        return False
+    
+    # Calculate edge density
+    edge_pixels = np.count_nonzero(roi)
+    total_pixels = roi.size
+    density = edge_pixels / total_pixels
+    
+    return density >= min_density
+
+def find_plate_candidates(edged, area_threshold=500, aspect_ratio_range=(2.0, 5.0), edge_density_threshold=0.1):
+    """
+    Find contours and filter based on shape, aspect ratio, and texture.
     """
     contours, _ = cv2.findContours(edged, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     candidates = []
 
     for cnt in contours:
         x, y, w, h = cv2.boundingRect(cnt)
-        if is_valid_plate(w, h, area_threshold, aspect_ratio_range):
-            candidates.append((x, y, w, h))
+        
+        # Basic validation
+        if not is_valid_plate(w, h, area_threshold, aspect_ratio_range):
+            continue
+            
+        # Advanced shape validation
+        if not check_plate_like_shape(cnt):
+            continue
+            
+        # Edge density check for text-like regions
+        if not check_edge_density(edged, x, y, w, h, edge_density_threshold):
+            continue
+            
+        candidates.append((x, y, w, h))
 
     return candidates
 
@@ -59,13 +99,13 @@ def detect_license_plates(input_path, output_path="output.jpg",
 
 def detect_license_plates_from_array(image_array, output_path="output.jpg",
                           blur_kernel=(5, 5), canny_thresh=(50, 150),
-                          area_threshold=500, aspect_ratio_range=(2.0, 5.0)):
+                          area_threshold=500, aspect_ratio_range=(2.0, 5.0), edge_density_threshold=0.1):
     """
     Directly detect from an image array (used in Streamlit)
     """
     image = image_array.copy()
     edged = preprocess_image(image, blur_kernel, canny_thresh)
-    candidates = find_plate_candidates(edged, area_threshold, aspect_ratio_range)
+    candidates = find_plate_candidates(edged, area_threshold, aspect_ratio_range, edge_density_threshold)
     result = draw_bounding_boxes(image, candidates)
     cv2.imwrite(output_path, result)
     return result
