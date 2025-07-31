@@ -43,7 +43,7 @@ def display_image_comparison(original: np.ndarray, processed: np.ndarray, title1
             original_rgb = cv2.cvtColor(original, cv2.COLOR_BGR2RGB)
         else:
             original_rgb = original
-        st.image(original_rgb, use_column_width=True)
+        st.image(original_rgb, use_container_width=True)
     
     with col2:
         st.subheader(title2)
@@ -52,7 +52,7 @@ def display_image_comparison(original: np.ndarray, processed: np.ndarray, title1
             processed_rgb = cv2.cvtColor(processed, cv2.COLOR_BGR2RGB)
         else:
             processed_rgb = processed
-        st.image(processed_rgb, use_column_width=True)
+        st.image(processed_rgb, use_container_width=True)
 
 def create_sample_boxes() -> Tuple[List[Tuple[int, int, int, int]], List[float]]:
     """
