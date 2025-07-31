@@ -3,6 +3,9 @@ import cv2
 import numpy as np
 from PIL import Image
 import io
+import sys
+if 'cv2' in sys.modules:
+    del sys.modules['cv2']
 
 # Import our custom modules
 from plate_detector import LicensePlateDetector
