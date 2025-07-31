@@ -191,10 +191,12 @@ Calculates Intersection over Union between two bounding boxes.
 ## 🎨 Screenshots
 
 ### License Plate Detection Interface
-![License Plate Detection](https://via.placeholder.com/800x400/4CAF50/FFFFFF?text=License+Plate+Detection+Interface)
+<img width="1536" height="1024" alt="Answer" src="https://github.com/user-attachments/assets/cccf4ae9-d75d-45f4-9b7e-3d50d94b836f" />
+
 
 ### YOLO Post-Filtering Interface
-![YOLO Post-Filtering](https://via.placeholder.com/800x400/2196F3/FFFFFF?text=YOLO+Post-Filtering+Interface)
+<img width="995" height="498" alt="image" src="https://github.com/user-attachments/assets/19052367-e5ca-46a7-99ba-8805a1a3bd43" />
+
 
 *Note: Replace placeholder images with actual screenshots from your application*
 
