@@ -131,7 +131,7 @@ def show_license_plate_detection():
         
         st.subheader("📷 Original Image")
         original_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        st.image(original_rgb, caption="Input Image", use_column_width=True)
+        st.image(original_rgb, caption="Input Image", use_container_width=True)
         
         # Processing parameters in sidebar
         st.sidebar.markdown("### 🔧 Detection Parameters")
@@ -273,7 +273,7 @@ def show_yolo_filtering():
         # Create visualization
         vis_image = visualize_boxes((600, 900), boxes, confidences, list(range(len(boxes))))
         vis_rgb = cv2.cvtColor(vis_image, cv2.COLOR_BGR2RGB)
-        st.image(vis_rgb, caption="All Detections (Red: Original)", use_column_width=True)
+        st.image(vis_rgb, caption="All Detections (Red: Original)", use_container_width=True)
     
     with col2:
         st.markdown("**Detection Summary:**")
@@ -297,7 +297,7 @@ def show_yolo_filtering():
                 # Create filtered visualization
                 filtered_vis = visualize_boxes((600, 900), boxes, confidences, valid_indices)
                 filtered_rgb = cv2.cvtColor(filtered_vis, cv2.COLOR_BGR2RGB)
-                st.image(filtered_rgb, caption="After Filtering (Green: Kept, Red: Rejected)", use_column_width=True)
+                st.image(filtered_rgb, caption="After Filtering (Green: Kept, Red: Rejected)", use_container_width=True)
             
             with col2:
                 # Display results
